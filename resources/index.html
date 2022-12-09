@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <h1>Search term keyword</h1>
+
+        <form id="search-form" method="post">
+            <label for="payload">Search keywords: </label>
+            <input type="search" id="payload" name="payload">
+            <input type="submit">
+        </form>
+
+        <h2>Result</h2>
+        <div id="result"><div>
+
+        <script>
+            const form = document.getElementById("search-form");
+
+            form.addEventListener("submit", formSubmit);
+
+            function formSubmit(e) {
+                e.preventDefault()
+
+                const payload = document.querySelector('input[id="payload"]').value
+
+                fetch("/keywords",
+                    {
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        method: "POST",
+                        body: JSON.stringify({payload: payload}),
+                    })
+                    .then(response => response.json())
+                    .then(value => {
+                        if (value && value.data != null && Object.keys(value.data).length !== 0) {
+                            document.getElementById("result").innerHTML = JSON.stringify(value.data)
+                        } else {
+                            document.getElementById("result").innerHTML = "Not found!"
+                        }
+                    })
+                    .catch(error => alert(error))
+            }
+        </script>
+    </body>
+</html>
